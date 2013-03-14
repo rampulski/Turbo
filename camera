@@ -1,0 +1,39 @@
+#pragma strict
+
+var maxview = 50; //the maximum field of view of the camera
+var minview = 10; //the minimum field of view of the camera
+var maxOffset = 1; //the maximum offset to look at the top of the shape
+var minOffset = 0; //the normal Y offset
+var offset = 0.00; //the offset of the camera 2 decimal places for smooth curve
+
+var target:GameObject;
+
+    function Update () {    
+       
+        camera.transform.position = target.transform.position+Vector3(0,40,-10);
+       
+       if (Input.GetAxis("Mouse ScrollWheel") < 0) { //if scroll is less than 0
+                camera.fieldOfView += 1; //add field of view (increase sight
+                offset -= 0.05; //number = maxOffset/(maxview - minview);
+                if(camera.fieldOfView >= maxview){
+                    camera.fieldOfView = maxview; //clamp to max field of view
+ 
+                }
+                if(offset <= minOffset){
+                    offset = minOffset; //decrease offset until min offset
+                }
+ 
+       }
+ 
+            if (Input.GetAxis("Mouse ScrollWheel") > 0) { //if scroll is more than 0
+                camera.fieldOfView -= 1; //decrease field of view (zoom)
+                offset += 0.05; //number = maxOffset/(maxview - minview);
+                if(camera.fieldOfView <= minview){
+                    camera.fieldOfView = minview;
+                }
+                if(offset >= maxOffset){
+                    offset = maxOffset;
+                }
+            }
+       
+  }
