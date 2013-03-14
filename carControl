@@ -1,32 +1,106 @@
+#pragma strict
 
-var rayMouse:Ray;
-var rayPush:Vector3;
-var target:GameObject;
-private var x:int;
-private var y:int;
-private var z:int;
+private var rayMouse : Ray;
+private var hit : RaycastHit;
+private var positionToLook : Vector3;
+private var directionToLook : Vector3;
+private var power : int;
+private var positionCar : Transform;
+private var startPoint : float;
+private var delay:int;
+
+var arrow : GUITexture;
+var target : GameObject;
+
 
 function Start () {
 
 }
 
 function Update () {
-
-rayMouse = camera.ScreenPointToRay(Input.mousePosition);
-Debug.Log("x = "+Input.mousePosition.x);
-Debug.Log("y = "+Input.mousePosition.y);
-Debug.Log("z = "+Input.mousePosition.z);
-  			
-	if(Input.GetMouseButton(0)) {
+	//PROGRESSION DE LA VOITURE
+	positionCar = transform.Find("BaseCar");
+	rayMouse = GameObject.Find("Main Camera").camera.ScreenPointToRay(Input.mousePosition);
+	if(Physics.Raycast(rayMouse,hit)) {
 	
-x = (target.transform.position.x-transform.position.x) - Input.mousePosition.x;
-y = (target.transform.position.y-transform.position.y) - Input.mousePosition.y;
-z = (target.transform.position.z-transform.position.z) - Input.mousePosition.z + 28;
-	//Debug.Log("vector x = "+x);
-	//Debug.Log("vector y = "+y);
-	//Debug.Log("vector z = "+z);
-
-	target.rigidbody.AddForce(Vector3(x,y,z)*Time.deltaTime*10);
+		//test si le rayon depuis la cam coupe le sol
+		if(hit.transform.name == "Cube") {
+		
+		positionToLook = hit.point; // Vector3 correspondant à l'intersection sol/ray
+		delay = 0;
 		}
-
+	}
+	
+	directionToLook = (positionToLook) - (transform.position);
+	
+	transform.rotation = Quaternion.LookRotation(-directionToLook);
+	
+		if(Input.GetMouseButtonDown(0) && delay == 0) {
+			
+			delay =1;
+    		var rate : float = 0.2; // (time you want it to take to travel to the mousePosition);
+		    var index : float = -8.04;
+		    arrow.transform.position.y = -8.04;
+		    arrow.transform.position.x = -2.23;
+		    
+		    if( index >= -8.04) {
+		     
+				while( index < -7.89 ) {
+			    
+	       			index += rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=600;
+	       			Debug.Log("Power = "+power);
+		    	}
+		    	while( index < -7.69 ) {
+			    
+	       			index += 2*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=800;
+	       			Debug.Log("Power = "+power);
+	    		}
+	    		while( index < -7.54 ) {
+			    
+	       			index += 3*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=1000;
+	       			Debug.Log("Power = "+power);
+	    		}
+	    	}
+	    	
+	    	if( index <= -7.54) {
+		     
+				while( index > -7.69 ) {
+			    
+	       			index += 3*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=1000;
+	       			Debug.Log("Power = "+power);
+		    	}
+		    	while( index < -7.89 ) {
+			    
+	       			index += 2*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=800;
+	       			Debug.Log("Power = "+power);
+	    		}
+	    		while( index < -8.04 ) {
+			    
+	       			index += 1*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=600;
+	       			Debug.Log("Power = "+power);
+	    		}
+	    	}
+	    	
+		    if(Input.GetMouseButtonDown(0)) {
+		    	delay = 0;
+		    	target.rigidbody.AddRelativeForce(Vector3.forward*power*Time.deltaTime);
+		    	Debug.Log("Final Power = "+power);
+		    	Debug.Log("Index = "+index);
+		    }
+		}
+		
+						
+		
 }
