@@ -1,0 +1,32 @@
+
+var rayMouse:Ray;
+var rayPush:Vector3;
+var target:GameObject;
+private var x:int;
+private var y:int;
+private var z:int;
+
+function Start () {
+
+}
+
+function Update () {
+
+rayMouse = camera.ScreenPointToRay(Input.mousePosition);
+Debug.Log("x = "+Input.mousePosition.x);
+Debug.Log("y = "+Input.mousePosition.y);
+Debug.Log("z = "+Input.mousePosition.z);
+  			
+	if(Input.GetMouseButton(0)) {
+	
+x = (target.transform.position.x-transform.position.x) - Input.mousePosition.x;
+y = (target.transform.position.y-transform.position.y) - Input.mousePosition.y;
+z = (target.transform.position.z-transform.position.z) - Input.mousePosition.z + 28;
+	//Debug.Log("vector x = "+x);
+	//Debug.Log("vector y = "+y);
+	//Debug.Log("vector z = "+z);
+
+	target.rigidbody.AddForce(Vector3(x,y,z)*Time.deltaTime*10);
+		}
+
+}
