@@ -8,6 +8,159 @@ private var power : int;
 private var positionCar : Transform;
 private var startPoint : float;
 private var delay:int;
+private var accel:int =1;
+
+var arrow : GUITexture;
+var target : GameObject;
+
+
+function Start () {
+delay = 0;
+}
+
+function Update () {
+	//PROGRESSION DE LA VOITURE
+	positionCar = transform.Find("BaseCar");
+	rayMouse = GameObject.Find("Main Camera").camera.ScreenPointToRay(Input.mousePosition);
+	if(Physics.Raycast(rayMouse,hit)) {
+
+		//test si le rayon depuis la cam coupe le sol
+		if(hit.transform.name == "Cube") {
+
+		positionToLook = hit.point; // Vector3 correspondant à l'intersection sol/ray
+		
+		}
+	}
+
+	directionToLook = (positionToLook) - (transform.position);
+
+	transform.rotation = Quaternion.LookRotation(-directionToLook);
+	
+	if(Input.GetMouseButtonDown(0) && delay == 0) {
+	Debug.Log(delay+" avant");
+	powerJauge();
+	}
+	if(Input.GetMouseButtonUp(0) && delay == 1) {
+	Debug.Log("UP");
+	shoot();
+	 }
+	
+	
+	
+}
+
+function powerJauge (){
+				
+						
+
+			
+			delay =1;
+	       	Debug.Log(delay+" apres");
+    		var rate : float = 0.2; // (time you want it to take to travel to the mousePosition);
+		    var index : float = 0.15;
+		    arrow.transform.position.y = 0.15;
+		    arrow.transform.position.x = 0.87;
+
+		    if( index <= 0.15) {
+
+				while( arrow.transform.position.y < 0.3 && accel==1) {
+
+	       			index = rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=600;
+	       			//Debug.Log("Power = "+power);
+	       			yield;
+	       			
+		    	}
+		    	while( arrow.transform.position.y < 0.6 && accel==1) {
+
+	       			index = 2*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=800;
+	       			//Debug.Log("Power = "+power);
+	       			yield;
+	    		}
+	    		while( arrow.transform.position.y < 0.87 && accel==1) {
+
+	       			index = 3*rate*Time.deltaTime;
+					arrow.transform.position.y += index;
+	       			power=1000;
+	       			//Debug.Log("Power = "+power);
+	       			//Debug.Log(arrow.transform.position.y);
+	       			yield;
+	    		}
+
+				while( arrow.transform.position.y >= 0.87 && accel==1) {
+
+	       			index = 3*rate*Time.deltaTime;
+					arrow.transform.position.y -= index;
+	       			power=1000;
+	       			//Debug.Log("Power = "+power);
+	       			yield;
+	       			accel=0;
+		    	}
+		    	
+		    	while( arrow.transform.position.y > 0.87 && accel==0) {
+
+	       			index = 3*rate*Time.deltaTime;
+					arrow.transform.position.y -= index;
+	       			power=1000;
+	       			//Debug.Log("Power = "+power);
+	       			yield;
+		    	}
+		    	
+		    	while( arrow.transform.position.y > 0.3 && accel==0) {
+
+	       			index = 2*rate*Time.deltaTime;
+					arrow.transform.position.y -= index;
+	       			power=800;
+	       			//Debug.Log("Power = "+power);
+	       			yield;
+	    		}
+	    		while( arrow.transform.position.y > 0.15 && accel==0) {
+
+	       			index = 1*rate*Time.deltaTime;
+					arrow.transform.position.y -= index;
+	       			power=600;
+	       			//Debug.Log("Power = "+power);
+	       			yield;
+
+	    		}
+    			while( arrow.transform.position.y <= 0.15 && accel==0) {
+
+       			index = 1*rate*Time.deltaTime;
+				arrow.transform.position.y -= index;
+       			power=600;
+       			//Debug.Log("Power = "+power);
+       			yield;
+       			accel=1;
+
+	    		}
+	     		
+		}
+
+}
+	
+
+
+function shoot(){	
+
+		 
+		    	delay = 0;
+		    	target.rigidbody.AddRelativeForce(Vector3.forward*power*Time.deltaTime);
+		    	Debug.Log("Final Power = "+power);
+		    	
+		    
+}#pragma strict
+
+private var rayMouse : Ray;
+private var hit : RaycastHit;
+private var positionToLook : Vector3;
+private var directionToLook : Vector3;
+private var power : int;
+private var positionCar : Transform;
+private var startPoint : float;
+private var delay:int;
 
 var arrow : GUITexture;
 var target : GameObject;
